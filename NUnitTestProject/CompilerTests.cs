@@ -44,9 +44,10 @@ namespace NUnitTestProject
                 string chars = RandomProvider.RandomStringFrom(RandomProvider.Rand.Next(3, 33),
                     @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789=/+*!@#$%^&()|");
                 int length = RandomProvider.Rand.Next(3, 33);
+                string compiled = Compiler.Compile(new StringInputProvider($@"<$chrs:chars_{length}:[{chars}]>"));
                 Assert.IsTrue(Regex.IsMatch(
-                    Compiler.Compile(new StringInputProvider($@"<$chrs:chars_{length}:[{chars}]>")),
-                    @"^[" + chars + "}]{" + length + "}$"));
+                    compiled,
+                    @"^[" + chars + "}]{" + length + "}$"), $"Compiled: {compiled}");
             }
         }
 
@@ -111,6 +112,13 @@ wow";
 8.0 8.0 8.0";
             var res = Compiler.Compile(new StringInputProvider(input));
             Assert.AreEqual(expected, res);
+
+            input = @"<noprint <$width: 2..2> <$height: 3..3> /><double_matrix(13.0..13.0#0.0): $width x $height>";
+            expected = @"13.0 13.0
+13.0 13.0
+13.0 13.0";
+            res = Compiler.Compile(new StringInputProvider(input));
+            Assert.IsTrue(Regex.IsMatch(res, expected), $"Regex is failed. Compiled: {res}");
 
             input = @"<double_matrix: 5x1>";
             expected = @"-?\d+\.\d+ -?\d+\.\d+ -?\d+\.\d+ -?\d+\.\d+ -?\d+\.\d+";

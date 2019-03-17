@@ -73,11 +73,30 @@ namespace AutoUnitTestingCore.Compilers
 
         private static string DoubleMatrix(string input, CultureInfo cultureInfo)
         {
-            return Regex.Replace(input, $@"<double_matrix(\(({DoubleIntervalRegex})?{DoublePrecisionRegex}?\))?: ?(?<width>\d+)x(?<height>\d+)>", m =>
+            return Regex.Replace(input, $@"<double_matrix(\(({DoubleIntervalRegex})?{DoublePrecisionRegex}?\))?: ?((?<width>\d+)|(?<width_var_name>\$[A-Za-z]\w*)) ?x ?((?<height>\d+)|(?<height_var_name>\$[A-Za-z]\w*))>", m =>
             {
                 Group group = m.Groups[1];
-                int width = int.Parse(m.Groups["width"].Value);
-                int height = int.Parse(m.Groups["height"].Value);
+
+                int width = 0;
+                if (m.Groups["width"].Success)
+                {
+                    width = int.Parse(m.Groups["width"].Value);
+                }
+                else if (m.Groups["width_var_name"].Success)
+                {
+                    width = int.Parse(ShowLuaVarCompiler.GetLuaVarValue(m.Groups["width_var_name"].Value));
+                }
+
+                int height = 0;
+                if (m.Groups["height"].Success)
+                {
+                    height = int.Parse(m.Groups["height"].Value);
+                }
+                else if (m.Groups["height_var_name"].Success)
+                {
+                    height = int.Parse(ShowLuaVarCompiler.GetLuaVarValue(m.Groups["height_var_name"].Value));
+                }
+
                 double from = 0;
                 if (m.Groups["from"].Success)
                 {
@@ -116,7 +135,7 @@ namespace AutoUnitTestingCore.Compilers
                         ? randFunc().ToString(format, cultureInfo)
                         : randFunc().ToString(cultureInfo)
                         ).ToArray();
-                    replace += string.Join(" ", doublesRow) + "\r\n";
+                    replace += string.Join(Program._matrixColDelimiter, doublesRow) + Program._matrixRowDelimiter;
                 }
 
                 return replace.Trim(' ', '\n', '\r');
