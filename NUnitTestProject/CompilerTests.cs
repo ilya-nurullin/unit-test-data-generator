@@ -42,7 +42,7 @@ namespace NUnitTestProject
             for (int i = 0; i < 5; i++)
             {
                 string chars = RandomProvider.RandomStringFrom(RandomProvider.Rand.Next(3, 33),
-                    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789=/+*!@#$%^&()|");
+                    @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789=/+*!@#$%^&()|");
                 int length = RandomProvider.Rand.Next(3, 33);
                 Assert.IsTrue(Regex.IsMatch(
                     Compiler.Compile(new StringInputProvider($@"<$chrs:chars_{length}:[{chars}]>")),

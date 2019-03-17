@@ -64,7 +64,7 @@ namespace AutoUnitTestingCore.Compilers
                 for (int i = 0; i < height; i++)
                 {
                     intsRow = intsRow.Select(x => RandomProvider.Rand.Next(from, to)).ToArray();
-                    replace += string.Join(" ", intsRow) + "\r\n";
+                    replace += string.Join(Program._matrixColDelimiter, intsRow) + Program._matrixRowDelimiter;
                 }
 
                 return replace.Trim(' ', '\n', '\r');

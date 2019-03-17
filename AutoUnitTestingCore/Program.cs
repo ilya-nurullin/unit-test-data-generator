@@ -29,6 +29,8 @@ namespace AutoUnitTestingCore
         private static int _testCount;
         private static int _startIndex;
         private static string _cultureName = "";
+        public static string _matrixColDelimiter = " ";
+        public static string _matrixRowDelimiter = "\r\n";
 
         private const string FILE_PATH_INDEX_VAR_NAME = "$INDEX$";
 
@@ -49,7 +51,18 @@ namespace AutoUnitTestingCore
             { "dry-run", v => _isDryRun = true},
             { "on-error=", v => _onProcessError = v},
             { "culture=", v => _cultureName= v},
+            { "matrix-col-delimiter=", v => _matrixColDelimiter = ReplaceToSpecialCharacters(v)},
+            { "matrix-row-delimiter=", v => _matrixRowDelimiter = ReplaceToSpecialCharacters(v)},
         };
+
+        private static string ReplaceToSpecialCharacters(string v)
+        {
+            return v
+                .Replace(@"\n", "\n")
+                .Replace(@"\r", "\r")
+                .Replace(@"\t", "\t")
+                ;
+        }
 
         public static CultureInfo _cultureInfo;
 
